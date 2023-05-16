@@ -25,14 +25,13 @@ object Requests {
     stepName: String,
     saveToken: Boolean,
     url: String,
-    pageContent: Option[String]=None,
+    pageContent: Option[String] = None,
     expectedStatus: Int = 200
   ): HttpRequestBuilder = {
     val builder = http("Get " + stepName)
       .get(url)
       .check(status.is(expectedStatus))
       .check(currentLocation.is(url))
-      
 
     val httpRequestBuilder = pageContent match {
       case Some(value) => builder.check(substring(value))
@@ -47,7 +46,7 @@ object Requests {
   }
 
   def getPage(stepName: String, url: String): HttpRequestBuilder =
-    getPage(stepName, saveToken = false, url, pageContent=None)
+    getPage(stepName, saveToken = false, url, pageContent = None)
 
   def postPage(
     stepName: String,
@@ -84,7 +83,6 @@ object Requests {
     val stepDescription =
       url.drop(currentPagePath.lastIndexOf("/") + 1).split("-").map(_.capitalize).mkString(" ")
     val stepName        = s"Get Page for $stepDescription"
-
 
     postPage(stepName, postToken = true, url, "", values)
   }

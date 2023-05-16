@@ -1,7 +1,7 @@
 lazy val root = (project in file("."))
   .enablePlugins(GatlingPlugin)
   .settings(
-    name := "advance-valuation-rulings-performance",
+    name := "advance-valuation-rulings-performance-tests",
     version := "0.1.0-SNAPSHOT",
     scalaVersion := "2.12.12",
     //implicitConversions & postfixOps are Gatling recommended -language settings

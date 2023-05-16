@@ -33,51 +33,34 @@ class ArsSimulation extends PerformanceTestRunner with ServicesConfiguration wit
   setup("initial-journey", "Method 4 journey with No Upload")
     .withActions(
       navigateToAccountHome,
-
       startNewApp,
-
       submitStarterChecklist(allTicked = true),
-
       navigateToPlanningToImportGoods,
-
       navigateToContactAboutYourApp,
-
       navigateToCheckRegisteredDetails(answer = true),
-
       navigateToProvideContactDetails(true),
       submitProvideContactDetails(true),
-
       navigateToMethodNamePage(true),
       selectMethod4(true),
-
       navigateWhyNotSelectedMethod1to3Page,
       enterReasonNotSelectedMethod1(true),
-
       enterReasonWhySelectedMethod4(true),
-
       navigateNameOfTheGoodsPage,
       enterNameofTheGoods(true),
-
       navigateFoundCommodityCodePage,
       submitFoundCommodityCode(true),
-
       navigateCommodityCodePage,
       enterCommodityCode(true),
-
       navigateLegalChallengePage,
       submityesOrNolChallengePage(true),
-
       navigateToConfidentialInfoPage,
       submitYesInConfidentialInfoPage(true),
-
       navigateToEnterConfidentialInfoPage,
       submitTheConfidentialInfo(true),
-
       navigateToUploadSupportingDocsPage,
       submitNoInUploadSupportingDocsPage(false),
-
       navigateToCheckYourAnswerPage,
-      postPageFor( "/advance-valuation-ruling/check-your-answers")
+      postPageFor("/advance-valuation-ruling/check-your-answers")
     )
 
   runSimulation()

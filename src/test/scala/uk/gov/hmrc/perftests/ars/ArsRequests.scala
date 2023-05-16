@@ -33,7 +33,7 @@ trait ArsRequests {
       expectedStatus = 200
     )
 
-  def startNewApp =  
+  def startNewApp =
     postPage(
       "start new app",
       s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
@@ -72,7 +72,6 @@ trait ArsRequests {
     answer.toPayload
   )
 
-
   def navigateToContactAboutYourApp =
     getPage(
       "Contact about your app",
@@ -97,7 +96,7 @@ trait ArsRequests {
   def submitProvideContactDetails(enterText: Boolean) = {
 
     val enterTextAllBoxes = Map(
-      "name" -> "test",
+      "name"  -> "test",
       "email" -> "test@gmail.com",
       "phone" -> "12345678"
     )
@@ -163,7 +162,6 @@ trait ArsRequests {
       enterText
     )
   }
-
 
   def navigateNameOfTheGoodsPage =
     getPage(
@@ -234,7 +232,6 @@ trait ArsRequests {
       s"$baseUrl/advance-valuation-ruling/describe-legal-challenges",
       answer.toPayload
     )
-
 
   def enterNameofThelegalchallengesGoods(enterText: Boolean) = {
 
