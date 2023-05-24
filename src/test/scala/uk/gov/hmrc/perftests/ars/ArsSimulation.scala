@@ -34,6 +34,7 @@ class ArsSimulation extends PerformanceTestRunner with ServicesConfiguration wit
     .withActions(
       navigateToAccountHome,
       startNewApp,
+
       submitStarterChecklist(allTicked = true),
       navigateToPlanningToImportGoods,
       navigateToContactAboutYourApp,
@@ -60,6 +61,7 @@ class ArsSimulation extends PerformanceTestRunner with ServicesConfiguration wit
       navigateToUploadSupportingDocsPage,
       submitNoInUploadSupportingDocsPage(false),
       navigateToCheckYourAnswerPage,
+//      clickAcceptAndApplyForRuling,
       postPageFor("/advance-valuation-ruling/check-your-answers")
     )
 
