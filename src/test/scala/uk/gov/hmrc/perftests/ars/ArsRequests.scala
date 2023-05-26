@@ -24,23 +24,22 @@ trait ArsRequests {
   }
 
   private val baseUrl = Configuration.arsUrl
+  private val urlWithDraftId = s"$baseUrl/advance-valuation-ruling/$${draftId}"
 
   def navigateToAccountHome =
     getPage(
       "account home",
       true,
-      s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      expectedStatus = 200
+      s"$baseUrl/advance-valuation-ruling/applications-and-rulings"
     )
 
   def startNewApp =
-    postPage(
+    postPageAndExtractDraftId(
       "start new app",
+      postToken = true,
       s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      "/start-application",
-      Map.empty[String, String],
-      useDraftId= false
-
+      s"start-application",
+      Map.empty[String, String]
     )
 
   def submitStarterChecklist(allTicked: Boolean) = {
@@ -54,24 +53,21 @@ trait ArsRequests {
     )
     postPage(
       "starter checklist",
-      "/start-application",
-      "/planning-import-goods-great-britain",
+      s"$urlWithDraftId/start-application",
       if (allTicked) allBoxesTickedPayload else Map.empty[String, String]
     )
   }
-
 
   def navigateToPlanningToImportGoods =
     getPage(
       "Are you planning to import goods to the UK",
       true,
-      "/planning-import-goods-great-britain"
+      s"$urlWithDraftId/planning-import-goods-great-britain"
     )
 
   def submitPlanningToImportGoods(answer: Boolean) = postPage(
     "Are you planning to import goods to the UK",
-    s"/planning-import-goods-great-britain",
-    s"/need-to-contact-you",
+    s"$urlWithDraftId/planning-import-goods-great-britain",
     answer.toPayload
   )
 
@@ -79,21 +75,21 @@ trait ArsRequests {
     getPage(
       "Contact about your app",
       true,
-      s"/need-to-contact-you"
+      s"$urlWithDraftId/need-to-contact-you"
     )
 
   def navigateToCheckRegisteredDetails(answer: Boolean) =
     getPage(
       "Check registered details",
       true,
-      s"/check-EORI-details?csrfToken=" + "${csrfToken}"
+      s"$urlWithDraftId/check-EORI-details?csrfToken=" + "${csrfToken}"
     )
 
   def navigateToProvideContactDetails(answer: Boolean) =
     getPage(
       "Enter Contact details",
       true,
-      s"/provide-contact-details"
+      s"$urlWithDraftId/provide-contact-details"
     )
 
   def submitProvideContactDetails(enterText: Boolean) = {
@@ -106,18 +102,16 @@ trait ArsRequests {
 
     postPage(
       "Provide Contact Details",
-      s"/provide-contact-details",
-      s"/select-valuation-method",
+      s"$urlWithDraftId/provide-contact-details",
       enterTextAllBoxes
     )
   }
-
 
   def navigateToMethodNamePage(answer: Boolean) =
     getPage(
       "Method Name Page",
       true,
-      s"/select-valuation-method"
+      s"$urlWithDraftId/select-valuation-method"
     )
 
   def selectMethod4(selectAnyOneMethod: Boolean) = {
@@ -126,8 +120,7 @@ trait ArsRequests {
     )
     postPage(
       "selectMethod",
-      s"/select-valuation-method",
-      s"/explain-why-not-methods-1-3",
+      s"$urlWithDraftId/select-valuation-method",
       if (selectAnyOneMethod) selectMethod else Map.empty[String, String]
     )
   }
@@ -136,7 +129,7 @@ trait ArsRequests {
     getPage(
       "Why Not Selected Method 1-3 Page",
       true,
-      s"/explain-why-not-methods-1-3"
+      s"$urlWithDraftId/explain-why-not-methods-1-3"
     )
 
   def enterReasonNotSelectedMethod1(enterText: Boolean) = {
@@ -147,8 +140,7 @@ trait ArsRequests {
 
     postPage(
       "Enter reason for Not selecting Method 1",
-      s"/explain-why-not-methods-1-3",
-      s"/explain-why-method-4",
+      s"$urlWithDraftId/explain-why-not-methods-1-3",
       enterText
     )
   }
@@ -161,8 +153,7 @@ trait ArsRequests {
 
     postPage(
       "Enter reason for Not selecting Method 1",
-      s"/explain-why-method-4",
-      s"/give-short-description-goods",
+      s"$urlWithDraftId/explain-why-method-4",
       enterText
     )
   }
@@ -171,7 +162,7 @@ trait ArsRequests {
     getPage(
       "Name Of Short description of goods",
       true,
-      s"/give-short-description-goods"
+      s"$urlWithDraftId/give-short-description-goods"
     )
   def enterNameofTheGoods(enterText: Boolean) = {
 
@@ -181,8 +172,7 @@ trait ArsRequests {
 
     postPage(
       "Enter hort description of goods",
-      s"/give-short-description-goods",
-      s"/do-you-have-commodity-code",
+      s"$urlWithDraftId/give-short-description-goods",
       enterText
     )
   }
@@ -191,14 +181,13 @@ trait ArsRequests {
     getPage(
       "Found Commodity Code Page",
       true,
-      s"/do-you-have-commodity-code"
+      s"$urlWithDraftId/do-you-have-commodity-code"
     )
 
   def submitFoundCommodityCode(answer: Boolean) =
     postPage(
       "Click Yes or No in  Found Commodity Code",
-      s"/do-you-have-commodity-code",
-      s"/enter-commodity-code",
+      s"$urlWithDraftId/do-you-have-commodity-code",
       answer.toPayload
     )
 
@@ -206,7 +195,7 @@ trait ArsRequests {
     getPage(
       "Navigate Commodity Code Page",
       true,
-      s"/enter-commodity-code"
+      s"$urlWithDraftId/enter-commodity-code"
     )
   def enterCommodityCode(enterText: Boolean) = {
 
@@ -216,8 +205,7 @@ trait ArsRequests {
 
     postPage(
       "Enter Commodity Code",
-      s"/enter-commodity-code",
-      s"/any-legal-challenges",
+      s"$urlWithDraftId/enter-commodity-code",
       enterText
     )
   }
@@ -226,14 +214,13 @@ trait ArsRequests {
     getPage(
       "Found Legal challenges Page",
       true,
-      s"/any-legal-challenges"
+      s"$urlWithDraftId/any-legal-challenges"
     )
 
   def submityesOrNolChallengePage(answer: Boolean) =
     postPage(
       "Click Yes or No in  Legal challenges Page",
-      s"/any-legal-challenges",
-      s"/describe-legal-challenges",
+      s"$urlWithDraftId/any-legal-challenges",
       answer.toPayload
     )
 
@@ -245,8 +232,7 @@ trait ArsRequests {
 
     postPage(
       "Enter the  description of Legal challenges to the goods",
-      s"/describe-legal-challenges",
-      s"/add-confidential-information",
+      s"$baseUrl/advance-valuation-ruling/describe-legal-challenges",
       enterText
     )
   }
@@ -255,13 +241,12 @@ trait ArsRequests {
     getPage(
       "Navigate To Add Confidential Info Page",
       true,
-      s"/add-confidential-information"
+      s"$urlWithDraftId/add-confidential-information"
     )
 
   def submitYesInConfidentialInfoPage(answer: Boolean) = postPage(
     "Select Yes in Confidential Page",
-    s"/add-confidential-information",
-    s"/provide-confidential-information",
+    s"$urlWithDraftId/add-confidential-information",
     answer.toPayload
   )
 
@@ -269,7 +254,7 @@ trait ArsRequests {
     getPage(
       "Navigate To Confidential  info Page",
       true,
-      s"/provide-confidential-information"
+      s"$urlWithDraftId/provide-confidential-information"
     )
 
   def submitTheConfidentialInfo(enterText: Boolean) = {
@@ -280,8 +265,7 @@ trait ArsRequests {
 
     postPage(
       "enter The Goods Confidential Info",
-      s"/provide-confidential-information",
-      s"/add-supporting-documents",
+      s"$urlWithDraftId/provide-confidential-information",
       enterText
     )
   }
@@ -290,13 +274,12 @@ trait ArsRequests {
     getPage(
       "Navigate To Upload Supporting Docs Page",
       true,
-      s"/add-supporting-documents"
+      s"$urlWithDraftId/add-supporting-documents"
     )
 
   def submitNoInUploadSupportingDocsPage(answer: Boolean) = postPage(
     "Select No Upload Supporting Docs Page",
-    s"/add-supporting-documents",
-    s"/check-your-answers",
+    s"$urlWithDraftId/add-supporting-documents",
     answer.toPayload
   )
 
@@ -304,24 +287,6 @@ trait ArsRequests {
     getPage(
       "Navigate To check Your Answers Page",
       true,
-      s"/check-your-answers"
+      s"$urlWithDraftId/check-your-answers"
     )
-
-//  def clickAcceptAndApplyForRuling (answer: Boolean)=
-//    postPage(
-//      "click Accept And Apply on check Your Answers Page",
-//      true,
-//      s"/check-your-answers",
-//      s"/application-complete?draftId=GBAVR002137474",
-//      answer.toPayload
-//    )
-
-
-//  def submityesOrNolChallengePage(answer: Boolean) =
-//    postPage(
-//      "Click Yes or No in  Legal challenges Page",
-//      s"$baseUrl/advance-valuation-ruling/DRAFT007085244/any-legal-challenges",
-//      s"$baseUrl/advance-valuation-ruling/DRAFT007085244/describe-legal-challenges",
-//      answer.toPayload
-//    )
 }

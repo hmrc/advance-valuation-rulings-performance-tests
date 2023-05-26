@@ -18,12 +18,10 @@ package uk.gov.hmrc.perftests.ars
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import io.gatling.http.engine.response
 import io.gatling.http.request.builder.HttpRequestBuilder
 
-
-
 object Requests {
+
   private val baseUrl = Configuration.arsUrl
 
   def getPage(
@@ -40,7 +38,7 @@ object Requests {
 
     val httpRequestBuilder = pageContent match {
       case Some(value) => builder.check(substring(value))
-      case None => builder
+      case None        => builder
     }
 
     if (saveToken) {
@@ -56,71 +54,24 @@ object Requests {
   def postPage(
                 stepName: String,
                 currentPage: String,
-                nextPage: String,
-                value: String,
-                useDraftId: Boolean
+                payload: Map[String, String]
               ): HttpRequestBuilder =
-    postPage(stepName, postToken = true, currentPage, nextPage, value)
-
-  def postPage(
-                stepName: String,
-                postToken: Boolean,
-                currentPage: String,
-                nextPage: String,
-                value: String
-              ): HttpRequestBuilder =
-    postPageA(stepName, postToken, currentPage, nextPage, Map("value" -> value))
-
-  def postPage(
-                stepName: String,
-                currentPage: String,
-                nextPage: String,
-                values: Map[String, String],
-                useDraftId: Boolean = true,
-
-              ): HttpRequestBuilder =
-    postPageA(stepName, postToken = true, currentPage, nextPage, values, useDraftId)
-
-  def postPageFor(
-                   currentPagePath: String,
-                   values: Map[String, String] = Map.empty
-                 ): HttpRequestBuilder = {
-    require(currentPagePath.startsWith("/"))
-
-    val url = s"${Configuration.arsUrl}$currentPagePath"
-    val stepDescription =
-      url.drop(currentPagePath.lastIndexOf("/") + 1).split("-").map(_.capitalize).mkString(" ")
-    val stepName = s"Get Page for $stepDescription"
-
-    postPageA(stepName, postToken = true, url, "", values)
-  }
-
-  def postPageA(
-                 stepName: String,
-                 postToken: Boolean,
-                 currentPage: String,
-                 nextPage: String,
-                 values: Map[String, String],
-                 useDraftId: Boolean = true,
-
-               ): HttpRequestBuilder =
     http(_ => "Post " + stepName)
       .post(currentPage)
-      .formParamMap(
-        if (postToken) {
-          values + ("csrfToken" -> f"$${csrfToken}")
-        } else {
-          values
-        }
-      )
+      .formParamMap(if (true) payload + ("csrfToken" -> f"$${csrfToken}") else payload)
       .check(status.is(303))
-      .check {
-        currentLocationRegex(s"$baseUrl/advance-valuation-ruling/(.*)"+s"$nextPage ")
-          //          .ofType[(String, String)]
-          .saveAs("draftId")
-        //        println(s"draft id :${draftId})
+      .check(currentLocation.is(currentPage))
+      .disableFollowRedirect
 
-      }
+  def postPageAndExtractDraftId(
+                                 stepName: String,
+                                 postToken: Boolean,
+                                 currentPage: String,
+                                 nextPage: String,
+                                 values: Map[String, String]
+                               ): HttpRequestBuilder =
+    http(_ => "Post " + stepName)
+      .post(currentPage)
+      .formParamMap(if (postToken) values + ("csrfToken" -> f"$${csrfToken}") else values)
+      .check(currentLocationRegex(s"$baseUrl/advance-valuation-ruling/(.*)/$nextPage").saveAs("draftId"))
 }
-
-
