@@ -58,7 +58,7 @@ object Requests {
               ): HttpRequestBuilder =
     http(_ => "Post " + stepName)
       .post(currentPage)
-      .formParamMap(if (true) payload + ("csrfToken" -> f"$${csrfToken}") else payload)
+      .formParamMap(payload + ("csrfToken" -> f"$${csrfToken}"))
       .check(status.is(303))
       .check(currentLocation.is(currentPage))
       .disableFollowRedirect
