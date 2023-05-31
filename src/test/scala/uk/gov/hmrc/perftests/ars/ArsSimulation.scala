@@ -15,53 +15,64 @@
  */
 
 package uk.gov.hmrc.perftests.ars
-
+import io.gatling.core.Predef._
+import io.gatling.http.Predef.http
+import io.gatling.http.protocol.HttpProtocolBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
-import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
 import uk.gov.hmrc.perftests.ars.AuthRequests._
-import uk.gov.hmrc.perftests.ars.Requests._
 
-class ArsSimulation extends PerformanceTestRunner with ServicesConfiguration with ArsRequests {
-  setup(
-    "registration-login",
-    "Log in to auth"
-  ).withRequests(
-    navigateToAuthWizard,
-    submitAuthWizard
-  )
+import scala.util.Random
 
-  setup("initial-journey", "Method 4 journey with No Upload")
-    .withActions(
-      navigateToAccountHome,
-      startNewApp,
-      submitStarterChecklist(allTicked = true),
-      navigateToPlanningToImportGoods,
-      navigateToContactAboutYourApp,
-      navigateToCheckRegisteredDetails(answer = true),
-      navigateToProvideContactDetails(true),
-      submitProvideContactDetails(true),
-      navigateToMethodNamePage(true),
-      selectMethod4(true),
-      navigateWhyNotSelectedMethod1to3Page,
-      enterReasonNotSelectedMethod1(true),
-      enterReasonWhySelectedMethod4(true),
-      navigateNameOfTheGoodsPage,
-      enterNameofTheGoods(true),
-      navigateFoundCommodityCodePage,
-      submitFoundCommodityCode(true),
-      navigateCommodityCodePage,
-      enterCommodityCode(true),
-      navigateLegalChallengePage,
-      submityesOrNolChallengePage(true),
-      navigateToConfidentialInfoPage,
-      submitYesInConfidentialInfoPage(true),
-      navigateToEnterConfidentialInfoPage,
-      submitTheConfidentialInfo(true),
-      navigateToUploadSupportingDocsPage,
-      submitNoInUploadSupportingDocsPage(false),
-      navigateToCheckYourAnswerPage,
-      postPageFor("/advance-valuation-ruling/check-your-answers")
-    )
+class ArsSimulation extends Simulation with ServicesConfiguration with ArsRequests {
 
-  runSimulation()
+  private val random            = new Random
+  private val currentTimeFeeder = Iterator.continually(Map("currentTime" -> System.currentTimeMillis().toString))
+  private val randomFeeder      = Iterator.continually(Map("random" -> Math.abs(random.nextInt())))
+
+  val httpProtocol: HttpProtocolBuilder = http
+    .acceptHeader("image/png,image/*;q=0.8,*/*;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .acceptLanguageHeader("en-gb,en;q=0.5")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0")
+    .header("True-Client-IP", "${random}")
+
+  val scn = scenario("registration-login")
+    .feed(currentTimeFeeder)
+    .feed(randomFeeder)
+    .exec(navigateToAuthWizard)
+    .exec(submitAuthWizard.disableFollowRedirect)
+    .exec(navigateToAccountHome)
+    .exec(startNewApp)
+    .exec(submitStarterChecklist(allTicked = true))
+    .exec(navigateToPlanningToImportGoods)
+    .exec(submitPlanningToImportGoods(true))
+    .exec(navigateToContactAboutYourApp)
+    .exec(navigateToCheckRegisteredDetails(answer = true))
+    .exec(navigateToProvideContactDetails(true))
+    .exec(submitProvideContactDetails(true))
+    .exec(navigateToMethodNamePage(true))
+    .exec(selectMethod4(true))
+    .exec(navigateWhyNotSelectedMethod1to3Page)
+    .exec(enterReasonNotSelectedMethod1(true))
+    .exec(enterReasonWhySelectedMethod4(true))
+    .exec(navigateNameOfTheGoodsPage)
+    .exec(enterNameofTheGoods(true))
+    .exec(navigateFoundCommodityCodePage)
+    .exec(submitFoundCommodityCode(true))
+    .exec(navigateCommodityCodePage)
+    .exec(enterCommodityCode(true))
+    .exec(navigateLegalChallengePage)
+    .exec(submityesOrNolChallengePage(true))
+    .exec(navigateToConfidentialInfoPage)
+    .exec(submitYesInConfidentialInfoPage(true))
+    .exec(navigateToEnterConfidentialInfoPage)
+    .exec(submitTheConfidentialInfo(true))
+    .exec(navigateToUploadSupportingDocsPage)
+    .exec(submitNoInUploadSupportingDocsPage(false))
+    .exec(navigateToCheckYourAnswerPage)
+
+  setUp(
+    scn.inject(atOnceUsers(6))
+  ).protocols(httpProtocol)
+
 }

@@ -24,20 +24,21 @@ trait ArsRequests {
   }
 
   private val baseUrl = Configuration.arsUrl
+  private val urlWithDraftId = s"$baseUrl/advance-valuation-ruling/$${draftId}"
 
   def navigateToAccountHome =
     getPage(
       "account home",
       true,
-      s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      expectedStatus = 200
+      s"$baseUrl/advance-valuation-ruling/applications-and-rulings"
     )
 
   def startNewApp =
-    postPage(
+    postPageAndExtractDraftId(
       "start new app",
+      postToken = true,
       s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      s"$baseUrl/advance-valuation-ruling/start-application",
+      s"start-application",
       Map.empty[String, String]
     )
 
@@ -52,8 +53,7 @@ trait ArsRequests {
     )
     postPage(
       "starter checklist",
-      s"$baseUrl/advance-valuation-ruling/start-application",
-      s"$baseUrl/advance-valuation-ruling/planning-import-goods-great-britain",
+      s"$urlWithDraftId/start-application",
       if (allTicked) allBoxesTickedPayload else Map.empty[String, String]
     )
   }
@@ -62,13 +62,12 @@ trait ArsRequests {
     getPage(
       "Are you planning to import goods to the UK",
       true,
-      s"$baseUrl/advance-valuation-ruling/planning-import-goods-great-britain"
+      s"$urlWithDraftId/planning-import-goods-great-britain"
     )
 
   def submitPlanningToImportGoods(answer: Boolean) = postPage(
     "Are you planning to import goods to the UK",
-    s"$baseUrl/advance-valuation-ruling/planning-import-goods-great-britain",
-    s"$baseUrl/advance-valuation-ruling/need-to-contact-you",
+    s"$urlWithDraftId/planning-import-goods-great-britain",
     answer.toPayload
   )
 
@@ -76,21 +75,21 @@ trait ArsRequests {
     getPage(
       "Contact about your app",
       true,
-      s"$baseUrl/advance-valuation-ruling/need-to-contact-you"
+      s"$urlWithDraftId/need-to-contact-you"
     )
 
   def navigateToCheckRegisteredDetails(answer: Boolean) =
     getPage(
       "Check registered details",
       true,
-      s"$baseUrl/advance-valuation-ruling/check-EORI-details?csrfToken=" + "${csrfToken}"
+      s"$urlWithDraftId/check-EORI-details?csrfToken=" + "${csrfToken}"
     )
 
   def navigateToProvideContactDetails(answer: Boolean) =
     getPage(
       "Enter Contact details",
       true,
-      s"$baseUrl/advance-valuation-ruling/provide-contact-details"
+      s"$urlWithDraftId/provide-contact-details"
     )
 
   def submitProvideContactDetails(enterText: Boolean) = {
@@ -103,8 +102,7 @@ trait ArsRequests {
 
     postPage(
       "Provide Contact Details",
-      s"$baseUrl/advance-valuation-ruling/provide-contact-details",
-      s"$baseUrl/advance-valuation-ruling/select-valuation-method",
+      s"$urlWithDraftId/provide-contact-details",
       enterTextAllBoxes
     )
   }
@@ -113,7 +111,7 @@ trait ArsRequests {
     getPage(
       "Method Name Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/select-valuation-method"
+      s"$urlWithDraftId/select-valuation-method"
     )
 
   def selectMethod4(selectAnyOneMethod: Boolean) = {
@@ -122,8 +120,7 @@ trait ArsRequests {
     )
     postPage(
       "selectMethod",
-      s"$baseUrl/advance-valuation-ruling/select-valuation-method",
-      s"$baseUrl/advance-valuation-ruling/explain-why-not-methods-1-3",
+      s"$urlWithDraftId/select-valuation-method",
       if (selectAnyOneMethod) selectMethod else Map.empty[String, String]
     )
   }
@@ -132,7 +129,7 @@ trait ArsRequests {
     getPage(
       "Why Not Selected Method 1-3 Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/explain-why-not-methods-1-3"
+      s"$urlWithDraftId/explain-why-not-methods-1-3"
     )
 
   def enterReasonNotSelectedMethod1(enterText: Boolean) = {
@@ -143,8 +140,7 @@ trait ArsRequests {
 
     postPage(
       "Enter reason for Not selecting Method 1",
-      s"$baseUrl/advance-valuation-ruling/explain-why-not-methods-1-3",
-      s"$baseUrl/advance-valuation-ruling/explain-why-method-4",
+      s"$urlWithDraftId/explain-why-not-methods-1-3",
       enterText
     )
   }
@@ -157,8 +153,7 @@ trait ArsRequests {
 
     postPage(
       "Enter reason for Not selecting Method 1",
-      s"$baseUrl/advance-valuation-ruling/explain-why-method-4",
-      s"$baseUrl/advance-valuation-ruling/give-short-description-goods",
+      s"$urlWithDraftId/explain-why-method-4",
       enterText
     )
   }
@@ -167,7 +162,7 @@ trait ArsRequests {
     getPage(
       "Name Of Short description of goods",
       true,
-      s"$baseUrl/advance-valuation-ruling/give-short-description-goods"
+      s"$urlWithDraftId/give-short-description-goods"
     )
   def enterNameofTheGoods(enterText: Boolean) = {
 
@@ -177,8 +172,7 @@ trait ArsRequests {
 
     postPage(
       "Enter hort description of goods",
-      s"$baseUrl/advance-valuation-ruling/give-short-description-goods",
-      s"$baseUrl/advance-valuation-ruling/do-you-have-commodity-code",
+      s"$urlWithDraftId/give-short-description-goods",
       enterText
     )
   }
@@ -187,14 +181,13 @@ trait ArsRequests {
     getPage(
       "Found Commodity Code Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/do-you-have-commodity-code"
+      s"$urlWithDraftId/do-you-have-commodity-code"
     )
 
   def submitFoundCommodityCode(answer: Boolean) =
     postPage(
       "Click Yes or No in  Found Commodity Code",
-      s"$baseUrl/advance-valuation-ruling/do-you-have-commodity-code",
-      s"$baseUrl/advance-valuation-ruling/enter-commodity-code",
+      s"$urlWithDraftId/do-you-have-commodity-code",
       answer.toPayload
     )
 
@@ -202,7 +195,7 @@ trait ArsRequests {
     getPage(
       "Navigate Commodity Code Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/enter-commodity-code"
+      s"$urlWithDraftId/enter-commodity-code"
     )
   def enterCommodityCode(enterText: Boolean) = {
 
@@ -212,8 +205,7 @@ trait ArsRequests {
 
     postPage(
       "Enter Commodity Code",
-      s"$baseUrl/advance-valuation-ruling/enter-commodity-code",
-      s"$baseUrl/advance-valuation-ruling/any-legal-challenges",
+      s"$urlWithDraftId/enter-commodity-code",
       enterText
     )
   }
@@ -222,14 +214,13 @@ trait ArsRequests {
     getPage(
       "Found Legal challenges Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/any-legal-challenges"
+      s"$urlWithDraftId/any-legal-challenges"
     )
 
   def submityesOrNolChallengePage(answer: Boolean) =
     postPage(
       "Click Yes or No in  Legal challenges Page",
-      s"$baseUrl/advance-valuation-ruling/any-legal-challenges",
-      s"$baseUrl/advance-valuation-ruling/describe-legal-challenges",
+      s"$urlWithDraftId/any-legal-challenges",
       answer.toPayload
     )
 
@@ -242,7 +233,6 @@ trait ArsRequests {
     postPage(
       "Enter the  description of Legal challenges to the goods",
       s"$baseUrl/advance-valuation-ruling/describe-legal-challenges",
-      s"$baseUrl/advance-valuation-ruling/add-confidential-information",
       enterText
     )
   }
@@ -251,13 +241,12 @@ trait ArsRequests {
     getPage(
       "Navigate To Add Confidential Info Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/add-confidential-information"
+      s"$urlWithDraftId/add-confidential-information"
     )
 
   def submitYesInConfidentialInfoPage(answer: Boolean) = postPage(
     "Select Yes in Confidential Page",
-    s"$baseUrl/advance-valuation-ruling/add-confidential-information",
-    s"$baseUrl/advance-valuation-ruling/provide-confidential-information",
+    s"$urlWithDraftId/add-confidential-information",
     answer.toPayload
   )
 
@@ -265,7 +254,7 @@ trait ArsRequests {
     getPage(
       "Navigate To Confidential  info Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/provide-confidential-information"
+      s"$urlWithDraftId/provide-confidential-information"
     )
 
   def submitTheConfidentialInfo(enterText: Boolean) = {
@@ -276,8 +265,7 @@ trait ArsRequests {
 
     postPage(
       "enter The Goods Confidential Info",
-      s"$baseUrl/advance-valuation-ruling/provide-confidential-information",
-      s"$baseUrl/advance-valuation-ruling/add-supporting-documents",
+      s"$urlWithDraftId/provide-confidential-information",
       enterText
     )
   }
@@ -286,13 +274,12 @@ trait ArsRequests {
     getPage(
       "Navigate To Upload Supporting Docs Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/add-supporting-documents"
+      s"$urlWithDraftId/add-supporting-documents"
     )
 
   def submitNoInUploadSupportingDocsPage(answer: Boolean) = postPage(
     "Select No Upload Supporting Docs Page",
-    s"$baseUrl/advance-valuation-ruling/add-supporting-documents",
-    s"$baseUrl/advance-valuation-ruling/check-your-answers",
+    s"$urlWithDraftId/add-supporting-documents",
     answer.toPayload
   )
 
@@ -300,6 +287,6 @@ trait ArsRequests {
     getPage(
       "Navigate To check Your Answers Page",
       true,
-      s"$baseUrl/advance-valuation-ruling/check-your-answers"
+      s"$urlWithDraftId/check-your-answers"
     )
 }
