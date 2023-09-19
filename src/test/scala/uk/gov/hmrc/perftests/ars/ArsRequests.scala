@@ -38,23 +38,31 @@ trait ArsRequests {
       "start new app",
       postToken = true,
       s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      s"start-application",
+      s"describe-role-importer",
       Map.empty[String, String]
     )
 
-  def submitStarterChecklist(allTicked: Boolean) = {
-    val allBoxesTickedPayload = Map(
-      "value[0]" -> "option1",
-      "value[1]" -> "option2",
-      "value[2]" -> "option3",
-      "value[3]" -> "option4",
-      "value[4]" -> "option5",
-      "value[5]" -> "option6"
+  def navigateToSelectYourRolePage =
+    getPage(
+      "Select you role as an importer",
+      s"$urlWithDraftId/planning-import-goods-great-britain"
+    )
+
+  def selectARole(SelectARole: Boolean) = {
+    val selectMethod = Map(
+      "value" -> "agentOnBehalfOfTrader"
     )
     postPage(
+      "select a role",
+      s"$urlWithDraftId/describe-role-importer",
+      if (SelectARole) selectMethod else Map.empty[String, String]
+    )
+  }
+
+  def submitStarterChecklist = {
+    getPage(
       "starter checklist",
-      s"$urlWithDraftId/start-application",
-      if (allTicked) allBoxesTickedPayload else Map.empty[String, String]
+      s"$urlWithDraftId/start-application"
     )
   }
 
@@ -74,25 +82,54 @@ trait ArsRequests {
   def navigateToContactAboutYourApp =
     getPage(
       "Contact about your app",
-      true,
       s"$urlWithDraftId/need-to-contact-you"
     )
 
-  def navigateToCheckRegisteredDetails(answer: Boolean) =
+  def navigateToEnterTradersEori =
+    getPage(
+      "Enter trader's EORI number page",
+      s"$urlWithDraftId/provide-trader-eori"
+    )
+
+  def submitTradersEori(EoriNo: Boolean) = {
+    val enterEori = Map(
+      "value" -> "GB112888888040"
+    )
+    postPage(
+      "enter traders EORI number",
+      s"$urlWithDraftId/provide-trader-eori?saveDraft=false",
+      if (EoriNo) enterEori else Map.empty[String, String]
+    )
+  }
+
+  def navigateToCheckRegisteredDetails() =
     getPage(
       "Check registered details",
       true,
       s"$urlWithDraftId/check-EORI-details?csrfToken=" + "${csrfToken}"
     )
 
-  def navigateToProvideContactDetails(answer: Boolean) =
+  def navigateToCheckTraderEoriDetails() =
+    getPage(
+      "Check trader EORI details",
+      s"$urlWithDraftId/check-trader-EORI-details"
+    )
+
+  def navigateToProvideContactDetails() =
     getPage(
       "Enter Contact details",
       true,
       s"$urlWithDraftId/provide-contact-details"
     )
 
-  def submitProvideContactDetails(enterText: Boolean) = {
+  def navigateToProvideBusinessContactDetails() =
+    getPage(
+      "Enter Business Contact details",
+      true,
+      s"$urlWithDraftId/business-contact-details"
+    )
+
+  def submitProvideContactDetails() = {
 
     val enterTextAllBoxes = Map(
       "name"  -> "test",
@@ -107,7 +144,23 @@ trait ArsRequests {
     )
   }
 
-  def navigateToMethodNamePage(answer: Boolean) =
+  def submitBusinessContactDetails() = {
+
+    val enterTextAllBoxes = Map(
+      "name" -> "test",
+      "email" -> "test@gmail.com",
+      "phone" -> "12345678",
+      "company name" -> "test Inc"
+    )
+
+    postPage(
+      "Provide Business Contact Details",
+      s"$urlWithDraftId/provide-contact-details?saveDraft=false",
+      enterTextAllBoxes
+    )
+  }
+
+  def navigateToMethodNamePage() =
     getPage(
       "Method Name Page",
       true,
@@ -132,16 +185,16 @@ trait ArsRequests {
       s"$urlWithDraftId/explain-why-not-methods-1-3"
     )
 
-  def enterReasonNotSelectedMethod1(enterText: Boolean) = {
-
+  def enterReasonNotSelectedMethod1(enterReason: Boolean) = {
     val enterText = Map(
       "value" -> "test"
     )
 
     postPage(
-      "Enter reason for Not selecting Method 1",
-      s"$urlWithDraftId/explain-why-not-methods-1-3",
-      enterText
+      "Enter reason for Not selecting Method 1-3",
+      s"$urlWithDraftId/explain-why-not-methods-1-3?saveDraft=false",
+      if (enterReason) enterText else Map.empty[String, String]
+
     )
   }
 
@@ -152,8 +205,8 @@ trait ArsRequests {
     )
 
     postPage(
-      "Enter reason for Not selecting Method 1",
-      s"$urlWithDraftId/explain-why-method-4",
+      "Enter reason for selecting Method 4",
+      s"$urlWithDraftId/explain-why-method-4?saveDraft=false",
       enterText
     )
   }
@@ -171,8 +224,8 @@ trait ArsRequests {
     )
 
     postPage(
-      "Enter hort description of goods",
-      s"$urlWithDraftId/give-short-description-goods",
+      "Enter short description of goods",
+      s"$urlWithDraftId/give-short-description-goods?saveDraft=false",
       enterText
     )
   }
@@ -205,7 +258,7 @@ trait ArsRequests {
 
     postPage(
       "Enter Commodity Code",
-      s"$urlWithDraftId/enter-commodity-code",
+      s"$urlWithDraftId/enter-commodity-code?saveDraft=false",
       enterText
     )
   }
@@ -265,7 +318,7 @@ trait ArsRequests {
 
     postPage(
       "enter The Goods Confidential Info",
-      s"$urlWithDraftId/provide-confidential-information",
+      s"$urlWithDraftId/provide-confidential-information?saveDraft=false",
       enterText
     )
   }
@@ -286,7 +339,6 @@ trait ArsRequests {
   def navigateToCheckYourAnswerPage =
     getPage(
       "Navigate To check Your Answers Page",
-      true,
       s"$urlWithDraftId/check-your-answers"
     )
 }
