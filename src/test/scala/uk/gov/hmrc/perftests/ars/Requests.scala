@@ -38,7 +38,7 @@ object Requests {
 
     val httpRequestBuilder = pageContent match {
       case Some(value) => builder.check(substring(value))
-      case None        => builder
+      case None => builder
     }
 
     if (saveToken) {
@@ -74,4 +74,5 @@ object Requests {
       .post(currentPage)
       .formParamMap(if (postToken) values + ("csrfToken" -> f"$${csrfToken}") else values)
       .check(currentLocationRegex(s"$baseUrl/advance-valuation-ruling/(.*)/$nextPage").saveAs("draftId"))
+
 }
