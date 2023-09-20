@@ -75,7 +75,7 @@ class ArsSimulation extends Simulation with ServicesConfiguration with ArsReques
     .exec(submitNoInUploadSupportingDocsPage(false))
 
   setUp(
-    scn.inject(atOnceUsers(1))
+    scn.inject(atOnceUsers(10))
   ).protocols(httpProtocol)
 
 }
