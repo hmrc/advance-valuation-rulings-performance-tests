@@ -15,67 +15,55 @@
  */
 
 package uk.gov.hmrc.perftests.ars
-import io.gatling.core.Predef._
-import io.gatling.http.Predef.http
-import io.gatling.http.protocol.HttpProtocolBuilder
-import uk.gov.hmrc.performance.conf.ServicesConfiguration
+
+import io.gatling.http.request.builder.HttpRequestBuilder
+import uk.gov.hmrc.performance.simulation.PerformanceTestRunner
+import uk.gov.hmrc.perftests.ars.ArsRequests._
 import uk.gov.hmrc.perftests.ars.AuthRequests._
 
-import scala.util.Random
+class ArsSimulation extends PerformanceTestRunner {
 
-class ArsSimulation extends Simulation with ServicesConfiguration with ArsRequests {
+  val fullJourney: Seq[HttpRequestBuilder] =
+    Seq(
+      navigateToAuthWizard,
+      submitAuthWizard.disableFollowRedirect,
+      navigateToAccountHome,
+      startNewApp,
+      navigateToSelectYourRolePage,
+      selectARole(true),
+      submitStarterChecklist,
+      navigateToPlanningToImportGoods,
+      submitPlanningToImportGoods(true),
+      navigateToContactAboutYourApp,
+      navigateToEnterTradersEori,
+      submitTradersEori(true),
+      navigateToCheckTraderEoriDetails(),
+      navigateToProvideBusinessContactDetails(),
+      submitBusinessContactDetails(),
+      navigateToMethodNamePage(),
+      selectMethod4(true),
+      navigateWhyNotSelectedMethod1to3Page,
+      enterReasonNotSelectedMethod1(true),
+      enterReasonWhySelectedMethod4(true),
+      navigateNameOfTheGoodsPage,
+      enterNameofTheGoods(true),
+      navigateFoundCommodityCodePage,
+      submitFoundCommodityCode(true),
+      navigateCommodityCodePage,
+      enterCommodityCode(true),
+      navigateLegalChallengePage,
+      submityesOrNolChallengePage(true),
+      navigateToConfidentialInfoPage,
+      submitYesInConfidentialInfoPage(true),
+      navigateToEnterConfidentialInfoPage,
+      submitTheConfidentialInfo(true),
+      navigateToUploadSupportingDocsPage,
+      submitNoInUploadSupportingDocsPage(false)
+    )
 
-  private val random            = new Random
-  private val currentTimeFeeder = Iterator.continually(Map("currentTime" -> System.currentTimeMillis().toString))
-  private val randomFeeder      = Iterator.continually(Map("random" -> Math.abs(random.nextInt())))
+  setup("full-journey", "Method 1")
+    .withRequests(fullJourney: _*)
 
-  val httpProtocol: HttpProtocolBuilder = http
-    .acceptHeader("image/png,image/*;q=0.8,*/*;q=0.5")
-    .acceptEncodingHeader("gzip, deflate")
-    .acceptLanguageHeader("en-gb,en;q=0.5")
-    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:25.0) Gecko/20100101 Firefox/25.0")
-    .header("True-Client-IP", "${random}")
-
-  val scn = scenario("registration-login")
-    .feed(currentTimeFeeder)
-    .feed(randomFeeder)
-    .exec(navigateToAuthWizard)
-    .exec(submitAuthWizard.disableFollowRedirect)
-    .exec(navigateToAccountHome)
-    .exec(startNewApp)
-    .exec(navigateToSelectYourRolePage)
-    .exec(selectARole(true))
-    .exec(submitStarterChecklist)
-    .exec(navigateToPlanningToImportGoods)
-    .exec(submitPlanningToImportGoods(true))
-    .exec(navigateToContactAboutYourApp)
-    .exec(navigateToEnterTradersEori)
-    .exec(submitTradersEori(true))
-    .exec(navigateToCheckTraderEoriDetails())
-    .exec(navigateToProvideBusinessContactDetails())
-    .exec(submitBusinessContactDetails())
-    .exec(navigateToMethodNamePage())
-    .exec(selectMethod4(true))
-    .exec(navigateWhyNotSelectedMethod1to3Page)
-    .exec(enterReasonNotSelectedMethod1(true))
-    .exec(enterReasonWhySelectedMethod4(true))
-    .exec(navigateNameOfTheGoodsPage)
-    .exec(enterNameofTheGoods(true))
-    .exec(navigateFoundCommodityCodePage)
-    .exec(submitFoundCommodityCode(true))
-    .exec(navigateCommodityCodePage)
-    .exec(enterCommodityCode(true))
-    .exec(navigateLegalChallengePage)
-    .exec(submityesOrNolChallengePage(true))
-    .exec(navigateToConfidentialInfoPage)
-    .exec(submitYesInConfidentialInfoPage(true))
-    .exec(navigateToEnterConfidentialInfoPage)
-    .exec(submitTheConfidentialInfo(true))
-    .exec(navigateToUploadSupportingDocsPage)
-    .exec(submitNoInUploadSupportingDocsPage(false))
-
-  setUp(
-    scn.inject(atOnceUsers(10))
-  ).protocols(httpProtocol)
+  runSimulation()
 
 }

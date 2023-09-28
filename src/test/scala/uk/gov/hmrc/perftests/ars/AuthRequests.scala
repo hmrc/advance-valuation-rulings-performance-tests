@@ -19,14 +19,19 @@ package uk.gov.hmrc.perftests.ars
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
+import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
-object AuthRequests {
-  val authWizardUrl: String        = s"${Configuration.authUrl}/auth-login-stub/gg-sign-in"
+object AuthRequests extends ServicesConfiguration {
+
+  val authUrl: String = baseUrlFor("auth-login-stub")
+  val arsUrl: String  = baseUrlFor("ars-frontend")
+
+  val authWizardUrl: String        = s"$authUrl/auth-login-stub/gg-sign-in"
   val redirectionUrl: String       = s"/advance-valuation-ruling/applications-and-rulings"
-  val authWizardSessionUrl: String = s"${Configuration.authUrl}/auth-login-stub/session"
+  val authWizardSessionUrl: String = s"$authUrl/auth-login-stub/session"
 
   val navigateToAuthWizard: HttpRequestBuilder =
-    http("Navigate to /auth-login-stub/gg-sign-in")
+    http("GET Navigate to /auth-login-stub/gg-sign-in")
       .get(authWizardUrl)
       .check(status.is(200))
 
@@ -36,7 +41,7 @@ object AuthRequests {
       .check(status.is(200))
 
   def submitAuthWizard: HttpRequestBuilder =
-    http("Log in to auth")
+    http("POST Log in to auth")
       .post(authWizardUrl)
       .formParam("redirectionUrl", redirectionUrl)
       .formParam("credentialStrength", "strong")

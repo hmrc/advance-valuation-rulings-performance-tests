@@ -26,3 +26,11 @@ lib_managed
 src_managed/
 project/project
 project/target
+
+/project/.bloop/
+/.bloop
+.metals/
+/.metals/
+.metals/metals.lock.db
+.vscode
+/execution.log
