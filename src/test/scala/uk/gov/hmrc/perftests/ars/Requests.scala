@@ -19,26 +19,27 @@ package uk.gov.hmrc.perftests.ars
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
+import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
-object Requests {
+object Requests extends ServicesConfiguration {
 
-  private val baseUrl = Configuration.arsUrl
+  val arsUrl: String = baseUrlFor("ars-frontend")
 
   def getPage(
-               stepName: String,
-               saveToken: Boolean,
-               url: String,
-               pageContent: Option[String] = None,
-               expectedStatus: Int = 200
-             ): HttpRequestBuilder = {
-    val builder = http("Get " + stepName)
+    stepName: String,
+    saveToken: Boolean,
+    url: String,
+    pageContent: Option[String] = None,
+    expectedStatus: Int = 200
+  ): HttpRequestBuilder = {
+    val builder = http("GET " + stepName)
       .get(url)
       .check(status.is(expectedStatus))
       .check(currentLocation.is(url))
 
     val httpRequestBuilder = pageContent match {
       case Some(value) => builder.check(substring(value))
-      case None => builder
+      case None        => builder
     }
 
     if (saveToken) {
@@ -52,11 +53,11 @@ object Requests {
     getPage(stepName, saveToken = false, url, pageContent = None)
 
   def postPage(
-                stepName: String,
-                currentPage: String,
-                payload: Map[String, String]
-              ): HttpRequestBuilder =
-    http(_ => "Post " + stepName)
+    stepName: String,
+    currentPage: String,
+    payload: Map[String, String]
+  ): HttpRequestBuilder =
+    http("POST " + stepName)
       .post(currentPage)
       .formParamMap(payload + ("csrfToken" -> f"$${csrfToken}"))
       .check(status.is(303))
@@ -64,15 +65,27 @@ object Requests {
       .disableFollowRedirect
 
   def postPageAndExtractDraftId(
-                                 stepName: String,
-                                 postToken: Boolean,
-                                 currentPage: String,
-                                 nextPage: String,
-                                 values: Map[String, String]
-                               ): HttpRequestBuilder =
-    http(_ => "Post " + stepName)
+    stepName: String,
+    postToken: Boolean,
+    currentPage: String,
+    nextPage: String,
+    values: Map[String, String]
+  ): HttpRequestBuilder = {
+
+    val extractDraftId: String => String = { (s: String) =>
+      s
+        .replace(s"/advance-valuation-ruling/", "")
+        .replace(s"/$nextPage", "")
+    }
+
+    http("POST " + stepName)
       .post(currentPage)
       .formParamMap(if (postToken) values + ("csrfToken" -> f"$${csrfToken}") else values)
-      .check(currentLocationRegex(s"$baseUrl/advance-valuation-ruling/(.*)/$nextPage").saveAs("draftId"))
-
+      .check(status.is(303))
+      .check(
+        header("location")
+          .transform(s => extractDraftId(s))
+          .saveAs("draftId")
+      )
+  }
 }

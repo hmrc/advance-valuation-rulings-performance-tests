@@ -1,10 +1,5 @@
-**This is a template README.md.  Be sure to update this with project specific content that describes your performance test project.**
 
 # advance-valuation-rulings-performance-tests
-
-Performance test suite for the `advance-valuation-ruling`, using [performance-test-runner](https://github.com/hmrc/performance-test-runner) under the hood.
-
-## Pre-requisites
 
 ### Services
 
@@ -17,7 +12,7 @@ docker run --rm -d --name mongo -d -p 27017:27017 mongo:4.0
 Start ARS dependant  services as follows:
 
 ```bash
-sm --start ARS_ALL -r --wait 100
+sm2 --start ARS_ALL
 ```
 
 ### Logging
@@ -26,7 +21,7 @@ The default log level for all HTTP requests is set to `WARN`. Configure [logback
 
 ### WARNING :warning:
 
-Do **NOT** run a full performance test against staging from your local machine. Please [implement a new performance test job](https://confluence.tools.tax.service.gov.uk/display/DTRG/Practical+guide+to+performance+testing+a+digital+service#Practicalguidetoperformancetestingadigitalservice-SettingupabuildonJenkinstorunagainsttheStagingenvironment) and execute your job from the dashboard in [Performance Jenkins](https://performance.tools.staging.tax.service.gov.uk).
+Do **NOT** run a full performance test against staging from your local machine.
 
 ## Tests
 
