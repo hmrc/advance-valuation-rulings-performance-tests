@@ -136,9 +136,11 @@ object ArsRequests extends ServicesConfiguration {
   def submitProvideContactDetails() = {
 
     val enterTextAllBoxes = Map(
-      "name"  -> "test",
+      "name" -> "test",
       "email" -> "test@gmail.com",
-      "phone" -> "12345678"
+      "phone" -> "12345678",
+      "companyName" -> "test company pv ltd",
+      "jobTitle" -> "Agent for trader"
     )
 
     postPage(
@@ -151,10 +153,11 @@ object ArsRequests extends ServicesConfiguration {
   def submitBusinessContactDetails() = {
 
     val enterTextAllBoxes = Map(
-      "name"         -> "test",
-      "email"        -> "test@gmail.com",
-      "phone"        -> "12345678",
-      "company name" -> "test Inc"
+      "name" -> "test",
+      "email" -> "test@gmail.com",
+      "phone" -> "12345678",
+      "company name" -> "test Inc",
+      "jobTitle" -> "Agent for trader"
     )
 
     postPage(
