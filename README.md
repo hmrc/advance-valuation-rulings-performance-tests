@@ -15,54 +15,42 @@ Start ARS dependant  services as follows:
 sm2 --start ARS_ALL
 ```
 
-### Logging
+---
 
-The default log level for all HTTP requests is set to `WARN`. Configure [logback.xml](src/test/resources/logback.xml) to update this if required.
-
-### WARNING :warning:
-
-Do **NOT** run a full performance test against staging from your local machine.
-
-## Tests
+### Running the tests
 
 Run smoke test (locally) as follows:
 
 ```bash
-sbt -Dperftest.runSmokeTest=true -DrunLocal=true gatling:test
+./run_local_smoke.sh
 ```
 
 Run full performance test (locally) as follows:
 
 ```bash
-sbt -DrunLocal=true gatling:test
+./run_local.sh
 ```
 
-Run smoke test (staging) as follows:
+### Running the tests on Staging Env
+
+To run the tests on Staging please use the performance test jenkins jobs
+
+---
+
+### Logging
+
+The default log level for all HTTP requests is set to `WARN`. Configure [logback.xml](src/test/resources/logback.xml) to update this if required.
+
+---
+
+### Formatting and dependencies
 
 ```bash
-sbt -Dperftest.runSmokeTest=true -DrunLocal=false gatling:test
+./run_format_and_deps.sh
 ```
 
-## Scalafmt
+---
 
-Check all project files are formatted as expected as follows:
-
-```bash
-sbt scalafmtCheckAll scalafmtCheck
-```
-
-Format `*.sbt` and `project/*.scala` files as follows:
-
-```bash
-sbt scalafmtSbt
-```
-
-Format all project files as follows:
-
-```bash
-sbt scalafmtAll
-```
-
-## License
+### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
