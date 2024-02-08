@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,15 +53,26 @@ object ArsRequests extends ServicesConfiguration {
     )
 
   def selectARole(SelectARole: Boolean) = {
-    val selectMethod = Map(
-      "value" -> "agentOnBehalfOfTrader"
-    )
+    val selectMethod = Map("value" -> "agentOnBehalfOfTrader")
     postPage(
       "select a role",
       s"$baseUrl/advance-valuation-ruling/$${draftId}/describe-role-importer",
       if (SelectARole) selectMethod else Map.empty[String, String]
     )
   }
+
+  def getChangeImporterRole =
+    getPage(
+      "GET ChangeImporterRole page",
+      s"$baseUrl/advance-valuation-ruling/$${draftId}/change-role-importer"
+    )
+
+  def postChangeImporterRole =
+    postPage(
+      "POST ChangeImporterRole page",
+      s"$baseUrl/advance-valuation-ruling/$${draftId}/change-role-importer",
+      Map("value" -> "false")
+    )
 
   def submitStarterChecklist =
     getPage(
@@ -136,11 +147,11 @@ object ArsRequests extends ServicesConfiguration {
   def submitProvideContactDetails() = {
 
     val enterTextAllBoxes = Map(
-      "name" -> "test",
-      "email" -> "test@gmail.com",
-      "phone" -> "12345678",
+      "name"        -> "test",
+      "email"       -> "test@gmail.com",
+      "phone"       -> "12345678",
       "companyName" -> "test company pv ltd",
-      "jobTitle" -> "Agent for trader"
+      "jobTitle"    -> "Agent for trader"
     )
 
     postPage(
@@ -153,11 +164,11 @@ object ArsRequests extends ServicesConfiguration {
   def submitBusinessContactDetails() = {
 
     val enterTextAllBoxes = Map(
-      "name" -> "test",
-      "email" -> "test@gmail.com",
-      "phone" -> "12345678",
+      "name"         -> "test",
+      "email"        -> "test@gmail.com",
+      "phone"        -> "12345678",
       "company name" -> "test Inc",
-      "jobTitle" -> "Agent for trader"
+      "jobTitle"     -> "Agent for trader"
     )
 
     postPage(
