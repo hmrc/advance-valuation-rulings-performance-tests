@@ -18,7 +18,7 @@ package uk.gov.hmrc.perftests.ars
 
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
-object Configuration extends ServicesConfiguration {
+trait Configuration extends ServicesConfiguration {
   val authUrl: String = baseUrlFor("auth-login-stub")
   val arsUrl: String  = baseUrlFor("ars-frontend")
 }

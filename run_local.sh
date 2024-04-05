@@ -1,3 +1,5 @@
 #!/bin/bash
 
-sbt clean -DrunLocal=true Gatling/test
+./run_format_and_deps.sh
+
+sbt -DrunLocal=true Gatling/test

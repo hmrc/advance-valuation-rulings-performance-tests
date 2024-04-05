@@ -1,56 +1,52 @@
 
 # advance-valuation-rulings-performance-tests
 
-### Services
+## Starting Services
 
-Start Mongo Docker container as follows:
+To start the required services via [service manager](https://github.com/hmrc/sm2), run:
 
-```bash
-docker run --rm -d --name mongo -d -p 27017:27017 mongo:4.0
-```
-
-Start ARS dependant  services as follows:
-
-```bash
+```shell
 sm2 --start ARS_ALL
 ```
 
----
+## Running Tests
 
-### Running the tests
+### Local
 
-Run smoke test (locally) as follows:
+To run smoke performance tests locally, execute the script:
 
 ```bash
 ./run_local_smoke.sh
 ```
 
-Run full performance test (locally) as follows:
+To run full performance tests locally, execute the script:
 
 ```bash
 ./run_local.sh
 ```
 
-### Running the tests on Staging Env
+### Staging
 
-To run the tests on Staging please use the performance test jenkins jobs
+To run smoke performance tests on Staging, execute the script:
 
----
+```bash
+./run_staging_smoke.sh
+```
 
-### Logging
+To run full performance tests on Staging, execute the script:
 
-The default log level for all HTTP requests is set to `WARN`. Configure [logback.xml](src/test/resources/logback.xml) to update this if required.
+```bash
+./run_staging.sh
+```
 
----
+These tests can also be executed on Staging via the performance test jenkins job.
 
-### Formatting and dependencies
+## Formatting and dependencies
 
 ```bash
 ./run_format_and_deps.sh
 ```
 
----
-
-### License
+## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

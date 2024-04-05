@@ -19,18 +19,16 @@ package uk.gov.hmrc.perftests.ars
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
-import uk.gov.hmrc.performance.conf.ServicesConfiguration
+import io.netty.handler.codec.http.HttpResponseStatus.{OK, SEE_OTHER}
 
-object Requests extends ServicesConfiguration {
-
-  val arsUrl: String = baseUrlFor("ars-frontend")
+object Requests {
 
   def getPage(
     stepName: String,
     saveToken: Boolean,
     url: String,
     pageContent: Option[String] = None,
-    expectedStatus: Int = 200
+    expectedStatus: Int = OK.code()
   ): HttpRequestBuilder = {
     val builder = http("GET " + stepName)
       .get(url)
@@ -60,7 +58,7 @@ object Requests extends ServicesConfiguration {
     http("POST " + stepName)
       .post(currentPage)
       .formParamMap(payload + ("csrfToken" -> f"$${csrfToken}"))
-      .check(status.is(303))
+      .check(status.is(SEE_OTHER.code()))
       .check(currentLocation.is(currentPage))
       .disableFollowRedirect
 
@@ -74,14 +72,14 @@ object Requests extends ServicesConfiguration {
 
     val extractDraftId: String => String = { (s: String) =>
       s
-        .replace(s"/advance-valuation-ruling/", "")
+        .replace("/advance-valuation-ruling/", "")
         .replace(s"/$nextPage", "")
     }
 
     http("POST " + stepName)
       .post(currentPage)
       .formParamMap(if (postToken) values + ("csrfToken" -> f"$${csrfToken}") else values)
-      .check(status.is(303))
+      .check(status.is(SEE_OTHER.code()))
       .check(
         header("location")
           .transform(s => extractDraftId(s))
