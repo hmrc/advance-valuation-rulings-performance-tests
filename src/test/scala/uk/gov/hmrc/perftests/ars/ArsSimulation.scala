@@ -26,7 +26,7 @@ class ArsSimulation extends PerformanceTestRunner {
   val fullJourney: Seq[HttpRequestBuilder] =
     Seq(
       navigateToAuthWizard,
-      submitAuthWizard.disableFollowRedirect,
+      submitAuthWizard,
       navigateToAccountHome,
       startNewApp,
       navigateToSelectYourRolePage,
@@ -46,19 +46,19 @@ class ArsSimulation extends PerformanceTestRunner {
       selectMethod4(true),
       navigateWhyNotSelectedMethod1to3Page,
       enterReasonNotSelectedMethod1(true),
-      enterReasonWhySelectedMethod4(true),
+      enterReasonWhySelectedMethod4(),
       navigateNameOfTheGoodsPage,
-      enterNameofTheGoods(true),
+      enterNameofTheGoods(),
       navigateFoundCommodityCodePage,
       submitFoundCommodityCode(true),
       navigateCommodityCodePage,
-      enterCommodityCode(true),
+      enterCommodityCode(),
       navigateLegalChallengePage,
-      submityesOrNolChallengePage(true),
+      submitYesOrNolChallengePage(true),
       navigateToConfidentialInfoPage,
       submitYesInConfidentialInfoPage(true),
       navigateToEnterConfidentialInfoPage,
-      submitTheConfidentialInfo(true),
+      submitTheConfidentialInfo(),
       navigateToUploadSupportingDocsPage,
       submitNoInUploadSupportingDocsPage(false)
     )

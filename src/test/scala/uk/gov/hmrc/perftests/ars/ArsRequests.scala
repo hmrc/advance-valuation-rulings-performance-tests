@@ -15,153 +15,116 @@
  */
 
 package uk.gov.hmrc.perftests.ars
-import uk.gov.hmrc.performance.conf.ServicesConfiguration
+import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.perftests.ars.Requests._
 
-object ArsRequests extends ServicesConfiguration {
+object ArsRequests extends Configuration {
 
   implicit class BooleanOps(b: Boolean) {
     def toPayload: Map[String, String] = if (b) Map("value" -> "true") else Map("value" -> "false")
   }
 
-  val authUrl: String = baseUrlFor("auth-login-stub")
-  val arsUrl: String  = baseUrlFor("ars-frontend")
-
-  private val baseUrl        = arsUrl
-  private val urlWithDraftId = s"$baseUrl/advance-valuation-ruling/$${draftId}"
-
-  def navigateToAccountHome =
+  def navigateToAccountHome: HttpRequestBuilder =
     getPage(
       "account home",
-      true,
-      s"$baseUrl/advance-valuation-ruling/applications-and-rulings"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/applications-and-rulings"
     )
 
-  def startNewApp =
+  def startNewApp: HttpRequestBuilder =
     postPageAndExtractDraftId(
       "Start new app",
       postToken = true,
-      s"$baseUrl/advance-valuation-ruling/applications-and-rulings",
-      s"describe-role-importer",
+      s"$arsUrl/advance-valuation-ruling/applications-and-rulings",
+      "describe-role-importer",
       Map.empty[String, String]
     )
 
-  def navigateToSelectYourRolePage =
+  def navigateToSelectYourRolePage: HttpRequestBuilder =
     getPage(
       "Select you role as an importer",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
     )
 
-  def selectARole(SelectARole: Boolean) = {
+  def selectARole(SelectARole: Boolean): HttpRequestBuilder = {
     val selectMethod = Map("value" -> "agentOnBehalfOfTrader")
     postPage(
       "select a role",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/describe-role-importer",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/describe-role-importer",
       if (SelectARole) selectMethod else Map.empty[String, String]
     )
   }
 
-  def getChangeImporterRole =
+  def getChangeImporterRole: HttpRequestBuilder =
     getPage(
       "GET ChangeImporterRole page",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/change-role-importer"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/change-role-importer"
     )
 
-  def postChangeImporterRole =
+  def postChangeImporterRole: HttpRequestBuilder =
     postPage(
       "POST ChangeImporterRole page",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/change-role-importer",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/change-role-importer",
       Map("value" -> "false")
     )
 
-  def submitStarterChecklist =
+  def submitStarterChecklist: HttpRequestBuilder =
     getPage(
       "starter checklist",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/start-application"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/start-application"
     )
 
-  def navigateToPlanningToImportGoods =
+  def navigateToPlanningToImportGoods: HttpRequestBuilder =
     getPage(
       "Are you planning to import goods to the UK",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
     )
 
-  def submitPlanningToImportGoods(answer: Boolean) =
+  def submitPlanningToImportGoods(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Are you planning to import goods to the UK",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain",
       answer.toPayload
     )
 
-  def navigateToContactAboutYourApp =
+  def navigateToContactAboutYourApp: HttpRequestBuilder =
     getPage(
       "Contact about your app",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/need-to-contact-you"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/need-to-contact-you"
     )
 
-  def navigateToEnterTradersEori =
+  def navigateToEnterTradersEori: HttpRequestBuilder =
     getPage(
       "Enter trader's EORI number page",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori"
     )
 
-  def submitTradersEori(EoriNo: Boolean) = {
+  def submitTradersEori(EoriNo: Boolean): HttpRequestBuilder = {
     val enterEori = Map(
       "value" -> "GB112888888040"
     )
     postPage(
       "enter traders EORI number",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori?saveDraft=false",
       if (EoriNo) enterEori else Map.empty[String, String]
     )
   }
 
-  def navigateToCheckRegisteredDetails() =
-    getPage(
-      "Check registered details",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/check-EORI-details?csrfToken=" + "${csrfToken}"
-    )
-
-  def navigateToCheckTraderEoriDetails() =
+  def navigateToCheckTraderEoriDetails(): HttpRequestBuilder =
     getPage(
       "Check trader EORI details",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/check-trader-EORI-details"
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/check-trader-EORI-details"
     )
 
-  def navigateToProvideContactDetails() =
-    getPage(
-      "Enter Contact details",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-contact-details"
-    )
-
-  def navigateToProvideBusinessContactDetails() =
+  def navigateToProvideBusinessContactDetails(): HttpRequestBuilder =
     getPage(
       "Enter Business Contact details",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/business-contact-details"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/business-contact-details"
     )
 
-  def submitProvideContactDetails() = {
-
-    val enterTextAllBoxes = Map(
-      "name"        -> "test",
-      "email"       -> "test@gmail.com",
-      "phone"       -> "12345678",
-      "companyName" -> "test company pv ltd",
-      "jobTitle"    -> "Agent for trader"
-    )
-
-    postPage(
-      "Provide Contact Details",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-contact-details",
-      enterTextAllBoxes
-    )
-  }
-
-  def submitBusinessContactDetails() = {
+  def submitBusinessContactDetails(): HttpRequestBuilder = {
 
     val enterTextAllBoxes = Map(
       "name"         -> "test",
@@ -173,49 +136,49 @@ object ArsRequests extends ServicesConfiguration {
 
     postPage(
       "Provide Business Contact Details",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-contact-details?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-contact-details?saveDraft=false",
       enterTextAllBoxes
     )
   }
 
-  def navigateToMethodNamePage() =
+  def navigateToMethodNamePage(): HttpRequestBuilder =
     getPage(
       "Method Name Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/select-valuation-method"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/select-valuation-method"
     )
 
-  def selectMethod4(selectAnyOneMethod: Boolean) = {
+  def selectMethod4(selectAnyOneMethod: Boolean): HttpRequestBuilder = {
     val selectMethod = Map(
       "value" -> "method4"
     )
     postPage(
       "selectMethod",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/select-valuation-method",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/select-valuation-method",
       if (selectAnyOneMethod) selectMethod else Map.empty[String, String]
     )
   }
 
-  def navigateWhyNotSelectedMethod1to3Page =
+  def navigateWhyNotSelectedMethod1to3Page: HttpRequestBuilder =
     getPage(
       "Why Not Selected Method 1-3 Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3"
     )
 
-  def enterReasonNotSelectedMethod1(enterReason: Boolean) = {
+  def enterReasonNotSelectedMethod1(enterReason: Boolean): HttpRequestBuilder = {
     val enterText = Map(
       "value" -> "test"
     )
 
     postPage(
       "Enter reason for Not selecting Method 1-3",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3?saveDraft=false",
       if (enterReason) enterText else Map.empty[String, String]
     )
   }
 
-  def enterReasonWhySelectedMethod4(enterText: Boolean) = {
+  def enterReasonWhySelectedMethod4(): HttpRequestBuilder = {
 
     val enterText = Map(
       "value" -> "test"
@@ -223,18 +186,19 @@ object ArsRequests extends ServicesConfiguration {
 
     postPage(
       "Enter reason for selecting Method 4",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/explain-why-method-4?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-method-4?saveDraft=false",
       enterText
     )
   }
 
-  def navigateNameOfTheGoodsPage =
+  def navigateNameOfTheGoodsPage: HttpRequestBuilder =
     getPage(
       "Name Of Short description of goods",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods"
     )
-  def enterNameofTheGoods(enterText: Boolean) = {
+
+  def enterNameofTheGoods(): HttpRequestBuilder = {
 
     val enterText = Map(
       "value" -> "text"
@@ -242,32 +206,33 @@ object ArsRequests extends ServicesConfiguration {
 
     postPage(
       "Enter short description of goods",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods?saveDraft=false",
       enterText
     )
   }
 
-  def navigateFoundCommodityCodePage =
+  def navigateFoundCommodityCodePage: HttpRequestBuilder =
     getPage(
       "Found Commodity Code Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code"
     )
 
-  def submitFoundCommodityCode(answer: Boolean) =
+  def submitFoundCommodityCode(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Click Yes or No in  Found Commodity Code",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code",
       answer.toPayload
     )
 
-  def navigateCommodityCodePage =
+  def navigateCommodityCodePage: HttpRequestBuilder =
     getPage(
       "Navigate Commodity Code Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code"
     )
-  def enterCommodityCode(enterText: Boolean) = {
+
+  def enterCommodityCode(): HttpRequestBuilder = {
 
     val enterText = Map(
       "value" -> "1234"
@@ -275,59 +240,46 @@ object ArsRequests extends ServicesConfiguration {
 
     postPage(
       "Enter Commodity Code",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code?saveDraft=false",
       enterText
     )
   }
 
-  def navigateLegalChallengePage =
+  def navigateLegalChallengePage: HttpRequestBuilder =
     getPage(
       "Found Legal challenges Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges"
     )
 
-  def submityesOrNolChallengePage(answer: Boolean) =
+  def submitYesOrNolChallengePage(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Click Yes or No in  Legal challenges Page",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges",
       answer.toPayload
     )
 
-  def enterNameofThelegalchallengesGoods(enterText: Boolean) = {
-
-    val enterText = Map(
-      "value" -> "text"
-    )
-
-    postPage(
-      "Enter the  description of Legal challenges to the goods",
-      s"$baseUrl/advance-valuation-ruling/describe-legal-challenges",
-      enterText
-    )
-  }
-
-  def navigateToConfidentialInfoPage =
+  def navigateToConfidentialInfoPage: HttpRequestBuilder =
     getPage(
       "Navigate To Add Confidential Info Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/add-confidential-information"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/add-confidential-information"
     )
 
-  def submitYesInConfidentialInfoPage(answer: Boolean) = postPage(
+  def submitYesInConfidentialInfoPage(answer: Boolean): HttpRequestBuilder = postPage(
     "Select Yes in Confidential Page",
-    s"$baseUrl/advance-valuation-ruling/$${draftId}/add-confidential-information",
+    s"$arsUrl/advance-valuation-ruling/$${draftId}/add-confidential-information",
     answer.toPayload
   )
 
-  def navigateToEnterConfidentialInfoPage =
+  def navigateToEnterConfidentialInfoPage: HttpRequestBuilder =
     getPage(
       "Navigate To Confidential  info Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information"
     )
 
-  def submitTheConfidentialInfo(enterText: Boolean) = {
+  def submitTheConfidentialInfo(): HttpRequestBuilder = {
 
     val enterText = Map(
       "value" -> "text"
@@ -335,27 +287,21 @@ object ArsRequests extends ServicesConfiguration {
 
     postPage(
       "enter The Goods Confidential Info",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information?saveDraft=false",
       enterText
     )
   }
 
-  def navigateToUploadSupportingDocsPage =
+  def navigateToUploadSupportingDocsPage: HttpRequestBuilder =
     getPage(
       "Navigate To Upload Supporting Docs Page",
-      true,
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents"
+      saveToken = true,
+      s"$arsUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents"
     )
 
-  def submitNoInUploadSupportingDocsPage(answer: Boolean) = postPage(
+  def submitNoInUploadSupportingDocsPage(answer: Boolean): HttpRequestBuilder = postPage(
     "Select No Upload Supporting Docs Page",
-    s"$baseUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents",
+    s"$arsUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents",
     answer.toPayload
   )
-
-  def navigateToCheckYourAnswerPage =
-    getPage(
-      "Navigate To check Your Answers Page",
-      s"$baseUrl/advance-valuation-ruling/$${draftId}/check-your-answers"
-    )
 }

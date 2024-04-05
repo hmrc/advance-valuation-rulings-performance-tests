@@ -19,26 +19,17 @@ package uk.gov.hmrc.perftests.ars
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
-import uk.gov.hmrc.performance.conf.ServicesConfiguration
+import io.netty.handler.codec.http.HttpResponseStatus.{OK, SEE_OTHER}
 
-object AuthRequests extends ServicesConfiguration {
+object AuthRequests extends Configuration {
 
-  val authUrl: String = baseUrlFor("auth-login-stub")
-  val arsUrl: String  = baseUrlFor("ars-frontend")
-
-  val authWizardUrl: String        = s"$authUrl/auth-login-stub/gg-sign-in"
-  val redirectionUrl: String       = s"/advance-valuation-ruling/applications-and-rulings"
-  val authWizardSessionUrl: String = s"$authUrl/auth-login-stub/session"
+  private val authWizardUrl: String  = s"$authUrl/auth-login-stub/gg-sign-in"
+  private val redirectionUrl: String = "/advance-valuation-ruling/applications-and-rulings"
 
   val navigateToAuthWizard: HttpRequestBuilder =
     http("GET Navigate to /auth-login-stub/gg-sign-in")
       .get(authWizardUrl)
-      .check(status.is(200))
-
-  val navigateToAuthWizardSession: HttpRequestBuilder =
-    http("Navigate to /auth-login-stub/session")
-      .get(authWizardSessionUrl)
-      .check(status.is(200))
+      .check(status.is(OK.code()))
 
   def submitAuthWizard: HttpRequestBuilder =
     http("POST Log in to auth")
@@ -53,6 +44,7 @@ object AuthRequests extends ServicesConfiguration {
       .formParam("enrolment[0].taxIdentifier[0].name", "EORINumber")
       .formParam("enrolment[0].taxIdentifier[0].value", "GB1234567890")
       .formParam("enrolment[0].state", "Activated")
-      .check(status.is(303))
+      .check(status.is(SEE_OTHER.code()))
       .check(header("Location").is(redirectionUrl))
+      .disableFollowRedirect
 }
