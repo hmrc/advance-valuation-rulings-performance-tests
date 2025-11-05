@@ -43,14 +43,14 @@ object ArsRequests extends Configuration {
   def navigateToSelectYourRolePage: HttpRequestBuilder =
     getPage(
       "Select you role as an importer",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/planning-import-goods-great-britain"
     )
 
   def selectARole(SelectARole: Boolean): HttpRequestBuilder = {
     val selectMethod = Map("value" -> "agentOnBehalfOfTrader")
     postPage(
       "select a role",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/describe-role-importer",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/describe-role-importer",
       if (SelectARole) selectMethod else Map.empty[String, String]
     )
   }
@@ -58,46 +58,46 @@ object ArsRequests extends Configuration {
   def getChangeImporterRole: HttpRequestBuilder =
     getPage(
       "GET ChangeImporterRole page",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/change-role-importer"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/change-role-importer"
     )
 
   def postChangeImporterRole: HttpRequestBuilder =
     postPage(
       "POST ChangeImporterRole page",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/change-role-importer",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/change-role-importer",
       Map("value" -> "false")
     )
 
   def submitStarterChecklist: HttpRequestBuilder =
     getPage(
       "starter checklist",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/start-application"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/start-application"
     )
 
   def navigateToPlanningToImportGoods: HttpRequestBuilder =
     getPage(
       "Are you planning to import goods to the UK",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/planning-import-goods-great-britain"
     )
 
   def submitPlanningToImportGoods(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Are you planning to import goods to the UK",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/planning-import-goods-great-britain",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/planning-import-goods-great-britain",
       answer.toPayload
     )
 
   def navigateToContactAboutYourApp: HttpRequestBuilder =
     getPage(
       "Contact about your app",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/need-to-contact-you"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/need-to-contact-you"
     )
 
   def navigateToEnterTradersEori: HttpRequestBuilder =
     getPage(
       "Enter trader's EORI number page",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/provide-trader-eori"
     )
 
   def submitTradersEori(EoriNo: Boolean): HttpRequestBuilder = {
@@ -106,7 +106,7 @@ object ArsRequests extends Configuration {
     )
     postPage(
       "enter traders EORI number",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-trader-eori?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/provide-trader-eori?saveDraft=false",
       if (EoriNo) enterEori else Map.empty[String, String]
     )
   }
@@ -114,14 +114,14 @@ object ArsRequests extends Configuration {
   def navigateToCheckTraderEoriDetails(): HttpRequestBuilder =
     getPage(
       "Check trader EORI details",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/check-trader-EORI-details"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/check-trader-EORI-details"
     )
 
   def navigateToProvideBusinessContactDetails(): HttpRequestBuilder =
     getPage(
       "Enter Business Contact details",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/business-contact-details"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/business-contact-details"
     )
 
   def submitBusinessContactDetails(): HttpRequestBuilder = {
@@ -136,7 +136,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "Provide Business Contact Details",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-contact-details?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/provide-contact-details?saveDraft=false",
       enterTextAllBoxes
     )
   }
@@ -145,7 +145,7 @@ object ArsRequests extends Configuration {
     getPage(
       "Method Name Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/select-valuation-method"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/select-valuation-method"
     )
 
   def selectMethod4(selectAnyOneMethod: Boolean): HttpRequestBuilder = {
@@ -154,7 +154,7 @@ object ArsRequests extends Configuration {
     )
     postPage(
       "selectMethod",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/select-valuation-method",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/select-valuation-method",
       if (selectAnyOneMethod) selectMethod else Map.empty[String, String]
     )
   }
@@ -163,7 +163,7 @@ object ArsRequests extends Configuration {
     getPage(
       "Why Not Selected Method 1-3 Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/explain-why-not-methods-1-3"
     )
 
   def enterReasonNotSelectedMethod1(enterReason: Boolean): HttpRequestBuilder = {
@@ -173,7 +173,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "Enter reason for Not selecting Method 1-3",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-not-methods-1-3?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/explain-why-not-methods-1-3?saveDraft=false",
       if (enterReason) enterText else Map.empty[String, String]
     )
   }
@@ -186,7 +186,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "Enter reason for selecting Method 4",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/explain-why-method-4?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/explain-why-method-4?saveDraft=false",
       enterText
     )
   }
@@ -195,7 +195,7 @@ object ArsRequests extends Configuration {
     getPage(
       "Name Of Short description of goods",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/give-short-description-goods"
     )
 
   def enterNameofTheGoods(): HttpRequestBuilder = {
@@ -206,7 +206,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "Enter short description of goods",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/give-short-description-goods?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/give-short-description-goods?saveDraft=false",
       enterText
     )
   }
@@ -215,13 +215,13 @@ object ArsRequests extends Configuration {
     getPage(
       "Found Commodity Code Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/do-you-have-commodity-code"
     )
 
   def submitFoundCommodityCode(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Click Yes or No in  Found Commodity Code",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/do-you-have-commodity-code",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/do-you-have-commodity-code",
       answer.toPayload
     )
 
@@ -229,7 +229,7 @@ object ArsRequests extends Configuration {
     getPage(
       "Navigate Commodity Code Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/enter-commodity-code"
     )
 
   def enterCommodityCode(): HttpRequestBuilder = {
@@ -240,7 +240,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "Enter Commodity Code",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/enter-commodity-code?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/enter-commodity-code?saveDraft=false",
       enterText
     )
   }
@@ -249,13 +249,13 @@ object ArsRequests extends Configuration {
     getPage(
       "Found Legal challenges Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/any-legal-challenges"
     )
 
   def submitYesOrNolChallengePage(answer: Boolean): HttpRequestBuilder =
     postPage(
       "Click Yes or No in  Legal challenges Page",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/any-legal-challenges",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/any-legal-challenges",
       answer.toPayload
     )
 
@@ -263,12 +263,12 @@ object ArsRequests extends Configuration {
     getPage(
       "Navigate To Add Confidential Info Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/add-confidential-information"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/add-confidential-information"
     )
 
   def submitYesInConfidentialInfoPage(answer: Boolean): HttpRequestBuilder = postPage(
     "Select Yes in Confidential Page",
-    s"$arsUrl/advance-valuation-ruling/$${draftId}/add-confidential-information",
+    s"$arsUrl/advance-valuation-ruling/#{draftId}/add-confidential-information",
     answer.toPayload
   )
 
@@ -276,7 +276,7 @@ object ArsRequests extends Configuration {
     getPage(
       "Navigate To Confidential  info Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/provide-confidential-information"
     )
 
   def submitTheConfidentialInfo(): HttpRequestBuilder = {
@@ -287,7 +287,7 @@ object ArsRequests extends Configuration {
 
     postPage(
       "enter The Goods Confidential Info",
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/provide-confidential-information?saveDraft=false",
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/provide-confidential-information?saveDraft=false",
       enterText
     )
   }
@@ -296,12 +296,12 @@ object ArsRequests extends Configuration {
     getPage(
       "Navigate To Upload Supporting Docs Page",
       saveToken = true,
-      s"$arsUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents"
+      s"$arsUrl/advance-valuation-ruling/#{draftId}/add-supporting-documents"
     )
 
   def submitNoInUploadSupportingDocsPage(answer: Boolean): HttpRequestBuilder = postPage(
     "Select No Upload Supporting Docs Page",
-    s"$arsUrl/advance-valuation-ruling/$${draftId}/add-supporting-documents",
+    s"$arsUrl/advance-valuation-ruling/#{draftId}/add-supporting-documents",
     answer.toPayload
   )
 }
