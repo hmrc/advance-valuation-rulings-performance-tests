@@ -64,7 +64,7 @@ class ArsSimulation extends PerformanceTestRunner {
     )
 
   setup("full-journey", "Method 1")
-    .withRequests(fullJourney: _*)
+    .withRequests(fullJourney*)
 
   runSimulation()
 

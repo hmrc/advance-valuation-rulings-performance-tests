@@ -20,6 +20,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import io.netty.handler.codec.http.HttpResponseStatus.{OK, SEE_OTHER}
+import java.lang._
 
 object Requests {
 
@@ -81,7 +82,7 @@ object Requests {
       .formParamMap(if (postToken) values + ("csrfToken" -> "#{csrfToken}") else values)
       .check(status.is(SEE_OTHER.code()))
       .check(
-        header("location")
+        header(_ => "location")
           .transform(s => extractDraftId(s))
           .saveAs("draftId")
       )
